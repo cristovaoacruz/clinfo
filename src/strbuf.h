@@ -7,7 +7,7 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
 #include "memory.h"
 #include "fmtmacros.h"

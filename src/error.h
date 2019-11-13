@@ -3,7 +3,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #include "ext.h"
 #include "info_loc.h"

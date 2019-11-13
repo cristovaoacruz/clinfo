@@ -1,3 +1,10 @@
+#include <stdio.h>
+
+#ifdef PRINT_TO_SYSLOG
+#include <syslog.h>
+#define printf(...) syslog(LOG_INFO, __VA_ARGS__)
+#endif
+
 /* Collect all available information on all available devices
  * on all available OpenCL platforms present in the system
  */
