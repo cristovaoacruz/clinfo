@@ -3221,52 +3221,13 @@ void usage(void)
 	puts("a name that contains the string \"raw\"");
 }
 
-int main(int argc, char *argv[])
+int print_clinfo(struct opt_out output)
 {
 	cl_uint p;
 	cl_int err;
-	int a = 0;
-
-	struct opt_out output;
 
 	struct platform_list plist;
 	init_plist(&plist);
-
-	output.mode = CLINFO_HUMAN;
-	output.cond = COND_PROP_CHECK;
-	output.brief = CL_FALSE;
-	output.offline = CL_FALSE;
-	output.check_size = CL_FALSE;
-
-	/* if there's a 'raw' in the program name, switch to raw output mode */
-	if (strstr(argv[0], "raw"))
-		output.mode = CLINFO_RAW;
-
-	/* process command-line arguments */
-	while (++a < argc) {
-		if (!strcmp(argv[a], "-a") || !strcmp(argv[a], "--all-props"))
-			output.cond = COND_PROP_TRY;
-		else if (!strcmp(argv[a], "-A") || !strcmp(argv[a], "--always-all-props"))
-			output.cond = COND_PROP_SHOW;
-		else if (!strcmp(argv[a], "--raw"))
-			output.mode = CLINFO_RAW;
-		else if (!strcmp(argv[a], "--human"))
-			output.mode = CLINFO_HUMAN;
-		else if (!strcmp(argv[a], "--offline"))
-			output.offline = CL_TRUE;
-		else if (!strcmp(argv[a], "-l") || !strcmp(argv[a], "--list"))
-			output.brief = CL_TRUE;
-		else if (!strcmp(argv[a], "-?") || !strcmp(argv[a], "-h")) {
-			usage();
-			return 0;
-		} else if (!strcmp(argv[a], "--version") || !strcmp(argv[a], "-v")) {
-			version();
-			return 0;
-		} else {
-			fprintf(stderr, "ignoring unknown command-line parameter %s\n", argv[a]);
-		}
-	}
-	output.detailed = !output.brief;
 
 	err = clGetPlatformIDs(0, NULL, &plist.num_platforms);
 	if (err != CL_PLATFORM_NOT_FOUND_KHR)
@@ -3274,9 +3235,9 @@ int main(int argc, char *argv[])
 
 	if (!output.brief)
 		printf(I0_STR "%" PRIu32 "\n",
-			(output.mode == CLINFO_HUMAN ?
-			 "Number of platforms" : "#PLATFORMS"),
-			plist.num_platforms);
+		(output.mode == CLINFO_HUMAN ?
+		 "Number of platforms" : "#PLATFORMS"),
+		plist.num_platforms);
 	if (!plist.num_platforms)
 		return 0;
 
@@ -3299,5 +3260,63 @@ int main(int argc, char *argv[])
 	}
 
 	free_plist(&plist);
+
 	return 0;
 }
+
+int print_raw_clinfo()
+{
+	struct opt_out output;
+	output.mode = CLINFO_RAW;
+	output.cond = COND_PROP_CHECK;
+	output.brief = CL_FALSE;
+	output.offline = CL_FALSE;
+	output.check_size = CL_FALSE;
+
+	return print_clinfo(output);
+}
+
+//int main(int argc, char *argv[])
+//{
+//	int a = 0;
+//
+//	struct opt_out output;
+//
+//	output.mode = CLINFO_HUMAN;
+//	output.cond = COND_PROP_CHECK;
+//	output.brief = CL_FALSE;
+//	output.offline = CL_FALSE;
+//	output.check_size = CL_FALSE;
+//
+//	/* if there's a 'raw' in the program name, switch to raw output mode */
+//	if (strstr(argv[0], "raw"))
+//		output.mode = CLINFO_RAW;
+//
+//	/* process command-line arguments */
+//	while (++a < argc) {
+//		if (!strcmp(argv[a], "-a") || !strcmp(argv[a], "--all-props"))
+//			output.cond = COND_PROP_TRY;
+//		else if (!strcmp(argv[a], "-A") || !strcmp(argv[a], "--always-all-props"))
+//			output.cond = COND_PROP_SHOW;
+//		else if (!strcmp(argv[a], "--raw"))
+//			output.mode = CLINFO_RAW;
+//		else if (!strcmp(argv[a], "--human"))
+//			output.mode = CLINFO_HUMAN;
+//		else if (!strcmp(argv[a], "--offline"))
+//			output.offline = CL_TRUE;
+//		else if (!strcmp(argv[a], "-l") || !strcmp(argv[a], "--list"))
+//			output.brief = CL_TRUE;
+//		else if (!strcmp(argv[a], "-?") || !strcmp(argv[a], "-h")) {
+//			usage();
+//			return 0;
+//		} else if (!strcmp(argv[a], "--version") || !strcmp(argv[a], "-v")) {
+//			version();
+//			return 0;
+//		} else {
+//			fprintf(stderr, "ignoring unknown command-line parameter %s\n", argv[a]);
+//		}
+//	}
+//	output.detailed = !output.brief;
+//
+//	return print_info(output);
+//}
